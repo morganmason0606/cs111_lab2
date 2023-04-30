@@ -162,6 +162,8 @@ int main(int argc, char *argv[])
 
   /* Your code here */
 
+
+
   //list is the head
   //data is an array of all the processes to be added
   u32 time = 0; 
@@ -188,7 +190,9 @@ int main(int argc, char *argv[])
     /*run curr_proc for quantum_length quantums or until finish*/
     curr_proc = TAILQ_FIRST(&list);
     for(int i = 0; i < quantum_length; i++){
+      time++;
 
+      
       /*look for tasks to add to the queue*/
       for(int i = 0; i < size + 1; i++){
         if(data[i].start_time == -1 && data[i].arrival_time <= time){
@@ -198,38 +202,29 @@ int main(int argc, char *argv[])
         }
       }
 
+      
       /*if there is no process to run but stuff still to do move forward in time*/
       if(curr_proc == NULL){
-        // printf("nothing to run at time %d\n", time);
-        time++; 
-        // printf("break if(curr_proc == NULL)\n");
         break;
       }
 
+      
       /*if this is the first time its run, modify start time*/
       if(curr_proc->start_time == -2){
-        curr_proc->start_time = time;
-        printf("pid: %d, %d, %d\n",curr_proc->pid, curr_proc->start_time, curr_proc->arrival_time);
+        curr_proc->start_time = time-1;
+        // printf("pid: %d, %d, %d\n",curr_proc->pid, curr_proc->start_time, curr_proc->arrival_time);
       } 
       // printf("%d: %d, time run%d\n",time, curr_proc->pid, curr_proc->burst_time);
       
+
       /*check if it has run to completion, if so break out of loop*/
-      time++;
       // printf("pid: %d --%d, %d\n",curr_proc->pid, (curr_proc->time_run+1), curr_proc->burst_time);
       if(++curr_proc->time_run == curr_proc->burst_time){
         curr_proc->end_time = time;
+        tasks_finished ++; 
         // printf("break timerun = bursttime\n");
         break;
       } 
-    }
-
-    /*look for tasks to add to the queue*/
-    for(int i = 0; i < size + 1; i++){
-      if(data[i].start_time == -1 && data[i].arrival_time <= time){
-        TAILQ_INSERT_TAIL(&list, &data[i], pointers);
-        data[i].start_time = -2;
-        // printf("added proc %d, arrived, %d tasks added %d\n", data[i].pid,data[i].arrival_time, tasks_finished);
-      }
     }
 
     /*now we move the just finished process to end of list or remove all together*/
@@ -239,10 +234,7 @@ int main(int argc, char *argv[])
       // printf("readded %d\n",curr_proc->pid);
       TAILQ_INSERT_TAIL(&list, curr_proc, pointers);
     }
-    else{
-      tasks_finished ++; 
-      // printf("done with process %d at %d, tasks finished %d \n",curr_proc->pid, time, tasks_finished);
-    }
+
     curr_proc = NULL;
   }
   
@@ -250,12 +242,12 @@ int main(int argc, char *argv[])
 
   /* add up the wait times*/
   for(int i = 0; i < size; i++){
-    int r = data[i].end_time-data[i].arrival_time - data[i].burst_time;
-    int w = data[i].start_time - data[i].arrival_time;
-    printf("%d,  %d,  %d     ",  data[i].end_time,data[i].arrival_time , data[i].burst_time);
-    printf("%d,%d\n",r,w);
-    total_response_time += (data[i].end_time-data[i].arrival_time - data[i].burst_time);
-    total_waiting_time += (data[i].start_time - data[i].arrival_time);
+    // int r = data[i].end_time-data[i].arrival_time - data[i].burst_time;
+    // int w = data[i].start_time - data[i].arrival_time;
+    // printf("%d,  %d,  %d     ",  data[i].end_time,data[i].arrival_time , data[i].burst_time);
+    // printf("%d,%d\n",r,w);
+    total_waiting_time += (data[i].end_time-data[i].arrival_time - data[i].burst_time);
+    total_response_time += (data[i].start_time - data[i].arrival_time);
   }
 
 
