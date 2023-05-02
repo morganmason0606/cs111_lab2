@@ -13,3 +13,6 @@ rr: rr.o
 .PHONY: clean
 clean:
 	rm -f rr.o rr
+
+tar:
+	@tar -cf 705747359-lab2-submission.tar rr.c README.md
