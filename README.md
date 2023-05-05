@@ -1,12 +1,3 @@
-NOT DONE DON'T USE JUST YET
-
-
-
-
-
-
-
-
 ## UID: 705747359
 (IMPORTANT: Only replace the above numbers with your true UID, do not modify spacing and newlines, otherwise your tarfile might not be created correctly)
 
@@ -24,6 +15,7 @@ the program is called `./rr path_to_process.txt quant_lenght` where path_to_proc
 
 number of processes
 pid, arrival time, burst length
+...
 
 and the processes are ordered on pid and arivial time (with the first process arriving at time 0)
 and quant length is the desired quantum lenght expresed as an integer > 0 
