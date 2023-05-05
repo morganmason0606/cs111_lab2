@@ -169,14 +169,11 @@ int main(int argc, char *argv[])
 
   //list is the head
   //data is an array of all the processes to be added
-  u32 time = 0; 
+  u32 time; 
   u32 tasks_finished = 0;
 
-  /*
-  assuming that data is orderd and the first task will start at time one
-  */
-
   /*we set the start time and response time to -1 for all to check if they have started or not*/
+  int min = 0; 
   for(int i = 0; i < size; i++){
     data[i].start_time = -1;
     data[i].time_run = 0;
@@ -184,11 +181,15 @@ int main(int argc, char *argv[])
       free(data);
       exit(EINVAL);
     }
+    if(data[min].arrival_time > data[i].arrival_time){
+      min = i;
+    }
   }
   
   /*add first process*/  
-  TAILQ_INSERT_TAIL(&list, &data[0], pointers);
-  data[0].start_time = 0;
+  TAILQ_INSERT_TAIL(&list, &data[min], pointers);
+  data[min].start_time = data[min].arrival_time;
+  time =  data[min].arrival_time;
 
   /*while loop to act out rr*/
   struct process *curr_proc;
